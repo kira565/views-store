@@ -1,7 +1,7 @@
 import { Connection, createConnection, Repository } from 'typeorm';
 import { ViewEntity, LayerEntity, LisObjectEntity } from '../../internal';
 
-let connection: Connection,
+let connection: Connection,                            // Инициализируем типы сущностей
 	viewsRepo: Repository<ViewEntity>,
 	layersRepo: Repository<LayerEntity>,
 	objectsRepo: Repository<LisObjectEntity>;
@@ -18,11 +18,12 @@ beforeEach(async () => {
 	layersRepo = connection.getRepository(LayerEntity);
 	objectsRepo = connection.getRepository(LisObjectEntity);
 });
-afterEach(() => {
+
+afterEach(() => {                                       // Закрываем коннект после каждого теста
 	return connection.close();
 });
 
-const DEFAULT_VIEW = {
+const DEFAULT_VIEW = {                                  // дефолтный Вид для тестов ( валидный )
 	id: 1,
 	name: 'anyViewName',
 	index: 1,
@@ -33,6 +34,8 @@ const DEFAULT_VIEW = {
 	url: 'https://anyurl.com',
 	worldId: 'Earth1',
 };
+
+//  при помощи spread оператора ... Получаем все из дефолтного вида + заменяем что-то то поле из входящего аргумента
 function createView(view: ViewEntity) {
 	return viewsRepo.save({
 		...DEFAULT_VIEW,
@@ -40,11 +43,12 @@ function createView(view: ViewEntity) {
 	});
 }
 
+// Создаем вид с помощью нашей функции, затем удаляем его
 async function createViewAndDelete(view: ViewEntity) {
 	const entity = await createView(view);
 	return viewsRepo.delete(entity.id);
 }
-
+// Получаем поля из связанной сущности Layers
 function getRowsFromViewsLayers() {
 	return connection.manager
 		.createQueryBuilder()
@@ -52,7 +56,7 @@ function getRowsFromViewsLayers() {
 		.from('views_layers', 'views_layers')
 		.getRawMany();
 }
-
+// Получаем поля из связанной сущности Objects
 function getRowsFromViewsObjects() {
 	return connection.manager
 		.createQueryBuilder()
