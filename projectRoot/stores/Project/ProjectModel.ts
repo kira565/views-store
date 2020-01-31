@@ -30,7 +30,9 @@ createConnection({
 	entities: [ViewEntity, LayerEntity, LisObjectEntity],
 }).then( async () => {
 	await getManager().transaction(async transactionEntityManager => {
-		project.viewStore && await project.viewStore.addItem(DEFAULT_VIEW, transactionEntityManager)
+		await project.viewStore?.addItem({DEFAULT_VIEW}, transactionEntityManager);
+		await project.viewStore?.load();
+		console.log(project.viewStore?.items)
 	})
 });
 

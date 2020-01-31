@@ -46,7 +46,7 @@ export default function createBaseTableModel
 			}),
 			addItem: flow(function* addItem( // загоняет в таблицу если ок то и в хранилище
 				itemData: Partial<Entity>,
-				manager?: EntityManager, // та херь которая хранит в тебе ентити и кучу говна но позволяет создавать транзакции. Работа с базой ведется в таком случае не через конекшон а через менеджер
+				manager?: EntityManager, 
 				// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			): Generator<any, IItem, InsertResult> {
 				let result: InsertResult;

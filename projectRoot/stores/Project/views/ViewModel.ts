@@ -1,6 +1,10 @@
-import {types} from "mobx-state-tree";
+import {types, flow, ISimpleType, Instance, getParent, getRoot, IModelType, getSnapshot} from "mobx-state-tree";
 import {LayerModel} from "../layers/LayerModel";
 import {LisObjectModel} from "../objects/LisObjectModel";
+import { ViewStoreModel, ViewStoreRepo } from "./ViewStore";
+import { Connection, InsertResult, UpdateResult } from "typeorm";
+
+
 
 export const ViewModel = types.model('view_model', {
     id: types.string,
@@ -15,8 +19,39 @@ export const ViewModel = types.model('view_model', {
     //layers: types.array(LayerModel),
     //objects: types.array(LisObjectModel)
 })
+	.views(self => ({
+		get upperLevelStore(): {
+			repository: ViewStoreRepo
+		} {
+			return getParent(self)
+		}
+	}))
     .actions(self => ({
-        changeViewName(name: string) {
-            self.name = name;
-        }
-    }));
+		update: flow(function* update(
+			fieldsToUpdate: Partial<Instance<typeof self>>,
+			isWriteToDb? : boolean
+		): Generator<Promise<UpdateResult>, void> {
+			let newObj = Object.assign(self, fieldsToUpdate);
+			let id = self.upperLevelStore.repository.getRecordIdFromIdentifier(newObj.id);
+			let result: Promise<UpdateResult>;			
+
+			if (isWriteToDb) {
+				result = new Promise(resolve => yield self.upperLevelStore.repository.save({
+					id,
+					fieldsToUpdate
+				}));
+				result.then(() => self = newObj)
+			}
+		}),
+	}))
+	.actions(self => ({
+		changeViewName(
+			name: string,
+			isWriteToDb?: boolean
+		): Promise<void> {
+			return self.update({name: name}, isWriteToDb)
+		},
+	}));
+
+
+
