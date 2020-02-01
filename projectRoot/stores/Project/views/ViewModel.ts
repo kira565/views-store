@@ -30,15 +30,12 @@ export const ViewModel = types.model('view_model', {
 		update: flow(function* update(
 			fieldsToUpdate: Partial<Omit<Instance<typeof self>, 'id'>>,
 			isWriteToDb? : boolean
-		): Generator<Promise<UpdateResult>, void> {
+		): Generator<any, void, InsertResult> {
 			let id = self.upperLevelStore.repository.getRecordIdFromIdentifier(self.id);
-			let result: Promise<UpdateResult>;			
 
 			if (isWriteToDb) {
-				result = new Promise(resolve => 
-					yield self.upperLevelStore.repository.save({id, fieldsToUpdate})
-				);
-				result.then(() => self = Object.assign(self, fieldsToUpdate))
+				yield self.upperLevelStore.repository.update(id, fieldsToUpdate);
+				Object.assign(self, fieldsToUpdate)
 			}
 		}),
 	}))
