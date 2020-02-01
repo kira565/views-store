@@ -28,19 +28,17 @@ export const ViewModel = types.model('view_model', {
 	}))
     .actions(self => ({
 		update: flow(function* update(
-			fieldsToUpdate: Partial<Instance<typeof self>>,
+			fieldsToUpdate: Partial<Omit<Instance<typeof self>, 'id'>>,
 			isWriteToDb? : boolean
 		): Generator<Promise<UpdateResult>, void> {
-			let newObj = Object.assign(self, fieldsToUpdate);
-			let id = self.upperLevelStore.repository.getRecordIdFromIdentifier(newObj.id);
+			let id = self.upperLevelStore.repository.getRecordIdFromIdentifier(self.id);
 			let result: Promise<UpdateResult>;			
 
 			if (isWriteToDb) {
-				result = new Promise(resolve => yield self.upperLevelStore.repository.save({
-					id,
-					fieldsToUpdate
-				}));
-				result.then(() => self = newObj)
+				result = new Promise(resolve => 
+					yield self.upperLevelStore.repository.save({id, fieldsToUpdate})
+				);
+				result.then(() => self = Object.assign(self, fieldsToUpdate))
 			}
 		}),
 	}))
