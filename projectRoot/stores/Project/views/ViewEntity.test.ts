@@ -1,7 +1,7 @@
 import { Connection, createConnection, Repository } from 'typeorm';
 import { ViewEntity, LayerEntity, LisObjectEntity } from '../../internal';
 
-let connection: Connection,                            // Инициализируем типы сущностей
+let connection: Connection, // Инициализируем типы сущностей
 	viewsRepo: Repository<ViewEntity>,
 	layersRepo: Repository<LayerEntity>,
 	objectsRepo: Repository<LisObjectEntity>;
@@ -19,11 +19,13 @@ beforeEach(async () => {
 	objectsRepo = connection.getRepository(LisObjectEntity);
 });
 
-afterEach(() => {                                       // Закрываем коннект после каждого теста
+afterEach(() => {
+	// Закрываем коннект после каждого теста
 	return connection.close();
 });
 
-const DEFAULT_VIEW = {                                  // дефолтный Вид для тестов ( валидный )
+const DEFAULT_VIEW = {
+	// дефолтный Вид для тестов ( валидный )
 	id: 1,
 	name: 'anyViewName',
 	index: 1,

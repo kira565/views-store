@@ -1,7 +1,7 @@
-import { types } from "mobx-state-tree";
-import { createConnection, ViewEntity, getManager } from "typeorm";
-import { LayerEntity, LisObjectEntity } from "../internal";
-import { ViewStoreModel } from "./views/ViewStore";
+import { types } from 'mobx-state-tree';
+import { createConnection, ViewEntity, getManager } from 'typeorm';
+import { LayerEntity, LisObjectEntity } from '../internal';
+import { ViewStoreModel } from './views/ViewStore';
 
 export const DEFAULT_VIEW = {
 	id: 1,
@@ -17,7 +17,7 @@ export const DEFAULT_VIEW = {
 
 export const ProjectModel = types.model('project_model', {
 	id: '1_project',
-	viewStore: types.maybe(ViewStoreModel)
+	viewStore: types.maybe(ViewStoreModel),
 });
 
 const project = ProjectModel.create();
@@ -28,11 +28,10 @@ createConnection({
 	synchronize: true,
 	logging: true,
 	entities: [ViewEntity, LayerEntity, LisObjectEntity],
-}).then( async () => {
+}).then(async () => {
 	await getManager().transaction(async transactionEntityManager => {
-		await project.viewStore?.addItem({DEFAULT_VIEW}, transactionEntityManager);
+		await project.viewStore?.addItem({ DEFAULT_VIEW }, transactionEntityManager);
 		await project.viewStore?.load();
-		console.log(project.viewStore?.items)
-	})
+		console.log(project.viewStore?.items);
+	});
 });
-

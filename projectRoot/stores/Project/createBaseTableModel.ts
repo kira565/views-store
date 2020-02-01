@@ -2,16 +2,14 @@ import { types, getParent, flow, Instance, IModelType, ISimpleType, destroy, Sna
 import { ObjectType, Connection, InsertResult, EntityManager } from 'typeorm';
 import BaseRepository from './BaseRepository';
 
-export default function createBaseTableModel
-<
+export default function createBaseTableModel<
 	/* eslint-disable @typescript-eslint/no-explicit-any */
 	ItemModel extends IModelType<{ id: ISimpleType<string> }, any, any, any>, // требует чтоь было ид и это была строка
 	SnapshotInItemModel extends SnapshotIn<Instance<ItemModel>>,
 	Entity extends { id: number } & { [key: string]: any },
 	CustomRepository extends BaseRepository<Entity, SnapshotInItemModel> & Record<string, any>
 	/* eslint-enable @typescript-eslint/no-explicit-any */
->
-(Model: ItemModel, repository: ObjectType<CustomRepository>) {
+>(Model: ItemModel, repository: ObjectType<CustomRepository>) {
 	type IItem = Instance<typeof Model>;
 	const BaseModel = types
 		.model({
@@ -33,7 +31,8 @@ export default function createBaseTableModel
 				return item;
 			},
 		}))
-		.views(self => ({ // второй .views для того, потому что self/project не инициализирован
+		.views(self => ({
+			// второй .views для того, потому что self/project не инициализирован
 			get repository(): CustomRepository {
 				return self.project.connection.manager.getCustomRepository(repository);
 			},
@@ -46,7 +45,7 @@ export default function createBaseTableModel
 			}),
 			addItem: flow(function* addItem( // загоняет в таблицу если ок то и в хранилище
 				itemData: Partial<Entity>,
-				manager?: EntityManager, 
+				manager?: EntityManager,
 				// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			): Generator<any, IItem, InsertResult> {
 				let result: InsertResult;

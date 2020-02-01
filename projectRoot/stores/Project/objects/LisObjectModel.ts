@@ -1,5 +1,5 @@
-import {types} from "mobx-state-tree";
+import { types } from 'mobx-state-tree';
 
 export const LisObjectModel = types.model('object_model', {
-   id: types.number
+	id: types.number,
 });

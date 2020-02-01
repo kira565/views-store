@@ -1,4 +1,4 @@
-import { Check, Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn} from 'typeorm';
+import { Check, Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { LayerEntity, LisObjectEntity } from '../../internal';
 
 @Entity({ name: 'views' })
@@ -40,7 +40,8 @@ export class ViewEntity {
 	@ManyToMany(() => LayerEntity, {
 		cascade: true,
 	})
-	@JoinTable({ // То есть у нас Сущность Layers хранит данные о id своего вида, и свой ид
+	@JoinTable({
+		// То есть у нас Сущность Layers хранит данные о id своего вида, и свой ид
 		name: 'views_layers',
 		joinColumn: {
 			name: 'view_id',
