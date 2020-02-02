@@ -1,5 +1,8 @@
-import { Check, Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Check, Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn, EntityRepository } from 'typeorm';
 import { LayerEntity, LisObjectEntity } from '../../internal';
+import BaseRepository from '../BaseRepository';
+import { SnapshotIn, Instance } from 'mobx-state-tree';
+import { ViewModel } from './ViewModel';
 
 @Entity({ name: 'views' })
 @Check('Views_Ограничение_index', `"index" > 0`)
@@ -66,3 +69,6 @@ export class ViewEntity {
 	})
 	objects: LisObjectEntity[];
 }
+
+@EntityRepository(ViewEntity)
+export class ViewStoreRepo extends BaseRepository<ViewEntity, SnapshotIn<Instance<typeof ViewModel>>> {}

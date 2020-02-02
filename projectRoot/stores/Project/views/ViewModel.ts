@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { types, flow, Instance, getParent } from 'mobx-state-tree';
-import { ViewStoreRepo } from './ViewStore';
 import { InsertResult } from 'typeorm';
+import { ViewStoreRepo } from './ViewEntity';
 
 export const ViewModel = types
 	.model('view_model', {
@@ -18,8 +18,11 @@ export const ViewModel = types
 		//objects: types.array(LisObjectModel)
 	})
 	.views(self => ({
-		get upperLevelStore(): {
+
+		get store(): {
 			repository: ViewStoreRepo;
+			//configurable: true,
+            //writeable: true
 		} {
 			return getParent(self);
 		},
@@ -29,12 +32,12 @@ export const ViewModel = types
 			fieldsToUpdate: Partial<Omit<Instance<typeof self>, 'id'>>,
 			isWriteToDb?: boolean,
 		): Generator<any, void, InsertResult> {
-			const id = self.upperLevelStore.repository.getRecordIdFromIdentifier(self.id);
+			const id = self.store.repository.getRecordIdFromIdentifier(self.id);
 
 			if (isWriteToDb) {
-				yield self.upperLevelStore.repository.update(id, fieldsToUpdate);
-				Object.assign(self, fieldsToUpdate);
+				yield self.store.repository.update(id, fieldsToUpdate);
 			}
+			Object.assign(self, fieldsToUpdate);
 		}),
 	}))
 	.actions(self => ({

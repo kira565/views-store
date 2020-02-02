@@ -16,22 +16,22 @@ export const DEFAULT_VIEW = {
 };
 
 export const ProjectModel = types.model('project_model', {
-	id: '1_project',
+	//id: '1_project',
 	viewStore: types.maybe(ViewStoreModel),
 });
 
 const project = ProjectModel.create();
 //test
-createConnection({
-	type: 'sqlite',
-	database: ':memory:',
-	synchronize: true,
-	logging: true,
-	entities: [ViewEntity, LayerEntity, LisObjectEntity],
-}).then(async () => {
-	await getManager().transaction(async transactionEntityManager => {
-		await project.viewStore?.addItem({ DEFAULT_VIEW }, transactionEntityManager);
-		await project.viewStore?.load();
-		console.log(project.viewStore?.items);
-	});
-});
+// createConnection({
+// 	type: 'sqlite',
+// 	database: ':memory:',
+// 	synchronize: true,
+// 	logging: true,
+// 	entities: [ViewEntity, LayerEntity, LisObjectEntity],
+// }).then(async () => {
+// 	await getManager().transaction(async transactionEntityManager => {
+// 		await project.viewStore?.addItem({ DEFAULT_VIEW }, transactionEntityManager);
+// 		await project.viewStore?.load();
+// 		console.log(project.viewStore?.items);
+// 	});
+// });
