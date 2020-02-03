@@ -21,8 +21,6 @@ export const ViewModel = types
 
 		get store(): {
 			repository: ViewStoreRepo;
-			//configurable: true,
-            //writeable: true
 		} {
 			return getParent(self);
 		},
