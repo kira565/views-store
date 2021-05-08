@@ -29,7 +29,7 @@
     "reflect-metadata": "^0.1.13",
     "remotedev": "^0.2.9",
     "sqlite3": "^4.1.1",
-    "typeorm": "^0.2.22"
+    "typeorm": "^0.2.25"
   },
   "devDependencies": {
     "@babel/core": "^7.7.7",
